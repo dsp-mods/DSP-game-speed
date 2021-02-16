@@ -1,0 +1,11 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/bin/Debug
+/Libs
+/obj/Debug
+/.vs/DSP Game Speed/v16
+/Properties
+/DSP Game Speed.sln
+/DSP Game Speed.csproj
