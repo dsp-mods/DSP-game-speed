@@ -15,7 +15,8 @@ This mod lets you set the speed of the game.
 
 #### Future Updates 
 - Add keybinds
-- Pause option
+- Pause option (without pressing ESC)
+- In-game time that is independent of game speed
 
 #### Troubleshooting
 - Feel free to add a bug report by [clicking here](https://github.com/dsp-mods/DSP-game-speed/issues/new?assignees=&labels=bug%2C+help+wanted&template=bug_report.md&title=%5BBUG%5D+).
