@@ -1,5 +1,6 @@
-## Dyson Sphere Program Game Speed Mod
+## Dyson Sphere Program Game Speed Mod   
 This mod lets you set the speed of the game.
+
 
 ### Features
 - Added User interface to set the speed of the game (Bottom Right corner).
@@ -20,3 +21,4 @@ This mod lets you set the speed of the game.
 - Feel free to add a bug report by [clicking here](https://github.com/dsp-mods/DSP-game-speed/issues/new?assignees=&labels=bug%2C+help+wanted&template=bug_report.md&title=%5BBUG%5D+).
 - If you have any mod ideas, you can make suggestions [here](https://github.com/dsp-mods/DSP-game-speed/issues/new?assignees=&labels=enhancement&template=feature-mod-request.md&title=%5BFeature+Request%5D)
 
+[![Github All Releases](https://img.shields.io/github/downloads/dsp-mods/DSP-game-speed/total.svg)]()
