@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using BepInEx.Logging;
+using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,9 +11,12 @@ namespace DSP_Game_Speed
 
         public static RectTransform[] speedBtn = new RectTransform[3];
         public static UnityEngine.Color[] old = new Color[3];
-        public static Text VersionText;
-        public static string textOld;
+
+        public static Text SpeedTxt;
+
         public static float curSpeed = 1;
+
+        public static int keysPressed = 0;
 
         [HarmonyPatch(typeof(GameMain), "Begin"), HarmonyPostfix]
         public static void PostFix()
@@ -20,13 +24,20 @@ namespace DSP_Game_Speed
             if (GameMain.instance != null)
             {
                 Time.timeScale = curSpeed;
-                VersionText = GameObject.Find("version-text").GetComponent<Text>();
-                textOld = VersionText.text;
-
+                
                 if (GameObject.Find("Game Menu/button-1-bg") && !GameObject.Find("speed-btn-3"))
                 {
                     RectTransform parent = GameObject.Find("Game Menu").GetComponent<RectTransform>();
                     RectTransform prefab = GameObject.Find("Game Menu/button-1-bg").GetComponent<RectTransform>();
+
+                    GameObject versionText = GameObject.Find("version-text");
+                    GameObject SpeedTxtGO = GameObject.Instantiate(versionText, GameObject.Find("Overlay Canvas/In Game").transform);
+                    SpeedTxtGO.name = "speed-text";
+
+                    Vector3 txtPos = versionText.transform.localPosition + new Vector3(0f, -50f, 0);
+                    SpeedTxtGO.transform.localPosition = txtPos;
+                    SpeedTxtGO.transform.localScale = versionText.transform.localScale;
+                    SpeedTxt = SpeedTxtGO.GetComponent<Text>();
 
                     old[0] = prefab.transform.Find("button-1").GetComponent<TranslucentImage>().color; // background color
                     old[1] = prefab.transform.Find("circle").GetComponent<Image>().color; // circle border color
@@ -44,8 +55,6 @@ namespace DSP_Game_Speed
                         speedBtn[i].GetComponent<UIButton>().tips.tipTitle = $"Game Speed ({i + 1}x)";
                         speedBtn[i].GetComponent<UIButton>().tips.tipText = $"Set game speed to {i + 1} x default";
                         speedBtn[i].GetComponent<UIButton>().tips.delay = 0f;
-
-                        // Setup color for active default color
                        
                         //setup image 
                         speedBtn[i].transform.Find("button-1/icon").GetComponent<Image>().sprite = GetSprite(GameSpeed.speedIcon[i]);
@@ -72,6 +81,34 @@ namespace DSP_Game_Speed
             }
         }
 
+        [HarmonyPatch(typeof(UIVersionText), "Refresh"), HarmonyPostfix]
+        public static void AddToVersionText()
+        {
+            if (GameMain.isRunning)
+            {
+                if(SpeedTxt != null)
+                    SpeedTxt.text = Time.timeScale.ToString() + "x";
+            }
+        }
+
+        [HarmonyPatch(typeof(GameMain), "Update"), HarmonyPostfix]
+        public static void PatchUpdate()
+        {
+            if (GameMain.isRunning)
+            {
+                if (Input.GetKeyDown(KeyCode.LeftAlt) && keysPressed == 0)
+                    keysPressed = 1;
+                else if (keysPressed == 1 && Input.GetKeyUp(KeyCode.LeftAlt))
+                    keysPressed = 0;
+                else if (keysPressed == 1 && Input.GetKeyDown(GameSpeed.speedKey[0]))
+                    SetGameSpeed(0);
+                else if (keysPressed == 1 && Input.GetKeyDown(GameSpeed.speedKey[1]))
+                    SetGameSpeed(1);
+                else if (keysPressed == 1 && Input.GetKeyDown(GameSpeed.speedKey[2]))
+                    SetGameSpeed(2);
+            }
+        }
+
         public static void SetColors(RectTransform btn, bool active)
         {
             if (active)
@@ -91,7 +128,9 @@ namespace DSP_Game_Speed
         { 
             curSpeed = speed + 1;
             Time.timeScale = curSpeed;
-            VersionText.text = textOld + "\n" + Time.timeScale.ToString() + "x";
+            SpeedTxt.text = Time.timeScale.ToString() + "x";
+            // find and replace
+            
             for (int i = 0; i < speedBtn.Length; i++)
             {
                 speedBtn[i].GetComponent<UIButton>().ResetTipDelay();
@@ -106,11 +145,10 @@ namespace DSP_Game_Speed
             Texture2D tex = new Texture2D(48, 48, TextureFormat.RGBA32, false);
 
             tex.LoadRawTextureData(buffer);
-            tex.name = $"speed-icon";
+            tex.name = "speed-icon";
             tex.Apply();
 
             return Sprite.Create(tex, new Rect(0f, 0f, 48f, 48f), new Vector2(0f, 0f), 1000);
-
         }
 
 
