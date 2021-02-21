@@ -1,6 +1,6 @@
 {
     "name": "DspGameSpeed",
-    "version_number": "0.5.1",
+    "version_number": "0.6.1",
     "website_url": "https://github.com/dsp-mods/DSP-game-speed",
     "description": "This mod lets you set the speed of the game (1x/default, 2x, or 3x).",
     "dependencies": [
