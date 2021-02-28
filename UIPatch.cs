@@ -96,9 +96,9 @@ namespace DSP_Game_Speed
         {
             if (GameMain.isRunning)
             {
-                if (Input.GetKeyDown(KeyCode.LeftAlt) && keysPressed == 0)
+                if (Input.GetKeyDown(GameSpeed.comboKey) && keysPressed == 0)
                     keysPressed = 1;
-                else if (keysPressed == 1 && Input.GetKeyUp(KeyCode.LeftAlt))
+                else if (keysPressed == 1 && Input.GetKeyUp(GameSpeed.comboKey))
                     keysPressed = 0;
                 else if (keysPressed == 1 && Input.GetKeyDown(GameSpeed.speedKey[0]))
                     SetGameSpeed(0);
@@ -106,6 +106,12 @@ namespace DSP_Game_Speed
                     SetGameSpeed(1);
                 else if (keysPressed == 1 && Input.GetKeyDown(GameSpeed.speedKey[2]))
                     SetGameSpeed(2);
+                else if (keysPressed == 1 && Input.GetKeyDown(GameSpeed.speedKey[3]))
+                    // toggle with Left Alt + 0
+                    if((int)Time.timeScale != (int)GameSpeed.customGameSpeed.Value)
+                        SetGameSpeed((int)(GameSpeed.customGameSpeed.Value) - 1);
+                    else
+                        SetGameSpeed(0);
             }
         }
 
@@ -129,14 +135,16 @@ namespace DSP_Game_Speed
             curSpeed = speed + 1;
             Time.timeScale = curSpeed;
             SpeedTxt.text = Time.timeScale.ToString() + "x";
-            // find and replace
-            
+
+            // reset all speed buttons
             for (int i = 0; i < speedBtn.Length; i++)
             {
                 speedBtn[i].GetComponent<UIButton>().ResetTipDelay();
                 SetColors(speedBtn[i], false);
             }
-            SetColors(speedBtn[speed], true);
+            // for all non-custom speed settings, set color to active
+            if (speed > 0 && speed < 3)
+                SetColors(speedBtn[speed], true);
 
         }
 
