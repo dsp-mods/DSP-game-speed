@@ -9,7 +9,7 @@ This mod lets you set the speed of the game.
 
 ### Updates
 #### V0.7.1
-- Added config file("Game-Folder"/BepInEx/config/dsp.mods.gamespeed.cfg) to set custom speed.(A current mod user request on GitHub). Use Combo Key(Left Alt/Left Ctrl) + 0 to toggle your custom speed setting. Not recommended to use very large numbers as it gets difficult to control player.
+- Added config file("Game-Folder"/BepInEx/config/dsp.mods.gamespeed.cfg) to set custom speed (A current mod user request on GitHub). Use Combo Key(Left Alt/Left Ctrl) + 0 to toggle your custom speed setting. Not recommended to use very large numbers as it gets difficult to control player.
 - Choose between Left Alt(Default) or Left Ctrl for Combo Key in the config file(0 for Left Alt, or 1 for Left Ctrl). 
 
 #### v0.6.1
