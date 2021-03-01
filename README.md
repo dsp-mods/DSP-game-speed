@@ -20,7 +20,7 @@ This mod lets you set the speed of the game.
 1. Click on install with ModManager and follow the steps.
 
 ### Installation(Manual)
-1. Download the [release](https://github.com/dsp-mods/DSP-game-speed/releases/tag/v0.6.1)
+1. Download the [release](https://github.com/dsp-mods/DSP-game-speed/releases)
 2. Extract and Copy .dll file to "Steam\steamapps\common\Dyson Sphere Program\BepInEx\plugins"
  - If BepInEx doesn't exist, download and install from [here](https://bepinex.github.io/bepinex_docs/master/articles/user_guide/installation/index.html?tabs=tabid-win)
 3. Start the game as usual. 
