@@ -2,6 +2,7 @@
 using HarmonyLib;
 using UnityEngine;
 using UnityEngine.UI;
+using Logger = BepInEx.Logging.Logger;
 
 namespace DSP_Game_Speed
 {
@@ -17,6 +18,8 @@ namespace DSP_Game_Speed
         public static float curSpeed = 1;
 
         public static int keysPressed = 0;
+
+        public static float startTime = 0;
 
         [HarmonyPatch(typeof(GameMain), "Begin"), HarmonyPostfix]
         public static void PostFix()
@@ -96,22 +99,41 @@ namespace DSP_Game_Speed
         {
             if (GameMain.isRunning)
             {
-                if (Input.GetKeyDown(GameSpeed.comboKey) && keysPressed == 0)
-                    keysPressed = 1;
-                else if (keysPressed == 1 && Input.GetKeyUp(GameSpeed.comboKey))
+                if ((Time.time - startTime > 1f || Input.GetKeyUp(GameSpeed.comboKey)) && keysPressed == 1)
+                {
                     keysPressed = 0;
-                else if (keysPressed == 1 && Input.GetKeyDown(GameSpeed.speedKey[0]))
+                    startTime = 0;
+                    return;
+                }
+
+                if (Input.GetKeyDown(GameSpeed.comboKey))
+                {
+                    startTime = Time.time;
+                    keysPressed = 1;
+                }
+                if (keysPressed == 1 && Input.GetKeyDown(GameSpeed.speedKey[0]))
+                {
                     SetGameSpeed(0);
-                else if (keysPressed == 1 && Input.GetKeyDown(GameSpeed.speedKey[1]))
+                    return;
+                }
+                if (keysPressed == 1 && Input.GetKeyDown(GameSpeed.speedKey[1]))
+                {
                     SetGameSpeed(1);
-                else if (keysPressed == 1 && Input.GetKeyDown(GameSpeed.speedKey[2]))
+                    return;
+                }
+                if (keysPressed == 1 && Input.GetKeyDown(GameSpeed.speedKey[2]))
+                {
                     SetGameSpeed(2);
-                else if (keysPressed == 1 && Input.GetKeyDown(GameSpeed.speedKey[3]))
+                    return;
+                }
+                if (keysPressed == 1 && Input.GetKeyDown(GameSpeed.speedKey[3]))
+                {
                     // toggle with Left Alt + 0
-                    if((int)Time.timeScale != (int)GameSpeed.customGameSpeed.Value)
+                    if ((int)Time.timeScale != (int)GameSpeed.customGameSpeed.Value)
                         SetGameSpeed((int)(GameSpeed.customGameSpeed.Value) - 1);
                     else
                         SetGameSpeed(0);
+                }
             }
         }
 
