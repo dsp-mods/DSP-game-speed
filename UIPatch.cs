@@ -134,16 +134,24 @@ namespace DSP_Game_Speed
         { 
             curSpeed = speed + 1;
             Time.timeScale = curSpeed;
-            SpeedTxt.text = Time.timeScale.ToString() + "x";
+
+            // The speed UI is built in the GameMain.Begin postfix, so it does not exist
+            // yet when a hotkey is pressed in the main menu (issue #10). Use Unity's
+            // overloaded == null rather than ?. so destroyed objects are skipped too.
+            if (SpeedTxt != null)
+                SpeedTxt.text = Time.timeScale.ToString() + "x";
 
             // reset all speed buttons
             for (int i = 0; i < speedBtn.Length; i++)
             {
+                if (speedBtn[i] == null)
+                    continue;
+
                 speedBtn[i].GetComponent<UIButton>().ResetTipDelay();
                 SetColors(speedBtn[i], false);
             }
             // for all non-custom speed settings, set color to active
-            if (speed > 0 && speed < 3)
+            if (speed > 0 && speed < 3 && speedBtn[speed] != null)
                 SetColors(speedBtn[speed], true);
 
         }
