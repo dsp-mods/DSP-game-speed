@@ -127,12 +127,12 @@ namespace DSP_Game_Speed
         //  - At 1x the mod stays out of the way entirely.
         private static void ReapplySpeedIfOverwritten()
         {
-            const float pausedTimeScale = 0f;
-            const float normalSpeed = 1f;
+            const float PausedTimeScale = 0f;
+            const float NormalSpeed = 1f;
 
-            if (Mathf.Approximately(curSpeed, normalSpeed))
+            if (Mathf.Approximately(curSpeed, NormalSpeed))
                 return;
-            if (Time.timeScale <= pausedTimeScale)
+            if (Time.timeScale <= PausedTimeScale)
                 return;
             if (Mathf.Approximately(Time.timeScale, curSpeed))
                 return;
