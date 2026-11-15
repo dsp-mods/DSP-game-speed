@@ -16,6 +16,10 @@ namespace DSP_Game_Speed
 
         public static float curSpeed = 1;
 
+        // The game's own Time.maximumDeltaTime, captured the first time the mod changes
+        // it so it can be restored at 1x. Null until then.
+        private static float? baselineMaximumDeltaTime;
+
         public static int keysPressed = 0;
 
         [HarmonyPatch(typeof(GameMain), "Begin"), HarmonyPostfix]
@@ -24,7 +28,8 @@ namespace DSP_Game_Speed
             if (GameMain.instance != null)
             {
                 Time.timeScale = curSpeed;
-                
+                ApplyCatchUpBudget(curSpeed);
+
                 if (GameObject.Find("Game Menu/button-1-bg") && !GameObject.Find("speed-btn-3"))
                 {
                     RectTransform parent = GameObject.Find("Game Menu").GetComponent<RectTransform>();
@@ -134,6 +139,7 @@ namespace DSP_Game_Speed
         { 
             curSpeed = speed + 1;
             Time.timeScale = curSpeed;
+            ApplyCatchUpBudget(curSpeed);
             SpeedTxt.text = Time.timeScale.ToString() + "x";
 
             // reset all speed buttons
@@ -146,6 +152,22 @@ namespace DSP_Game_Speed
             if (speed > 0 && speed < 3)
                 SetColors(speedBtn[speed], true);
 
+        }
+
+        // Time.timeScale alone stops helping past roughly 10x-20x: Unity caps the scaled
+        // time per frame at Time.maximumDeltaTime, which caps FixedUpdate calls per
+        // frame, so the surplus speed is silently dropped. Raise the cap just enough
+        // for the selected speed, and fall back to the game's own value at 1x.
+        private static void ApplyCatchUpBudget(float speed)
+        {
+            if (GameSpeed.raiseCatchUpBudget == null || !GameSpeed.raiseCatchUpBudget.Value)
+                return;
+
+            if (baselineMaximumDeltaTime == null)
+                baselineMaximumDeltaTime = Time.maximumDeltaTime;
+
+            Time.maximumDeltaTime = CatchUpBudget.RequiredMaximumDeltaTime(
+                speed, baselineMaximumDeltaTime.Value);
         }
 
         public static Sprite GetSprite(byte[] buffer)
