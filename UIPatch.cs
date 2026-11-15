@@ -142,8 +142,10 @@ namespace DSP_Game_Speed
                 speedBtn[i].GetComponent<UIButton>().ResetTipDelay();
                 SetColors(speedBtn[i], false);
             }
-            // for all non-custom speed settings, set color to active
-            if (speed > 0 && speed < 3)
+            // Highlight the preset button for 1x/2x/3x. `speed` is a 0-based button
+            // index (0 = 1x), so index 0 must be included; custom speeds above 3x fall
+            // outside the array and leave every button unlit.
+            if (speed >= 0 && speed < speedBtn.Length)
                 SetColors(speedBtn[speed], true);
 
         }
