@@ -112,7 +112,32 @@ namespace DSP_Game_Speed
                         SetGameSpeed((int)(GameSpeed.customGameSpeed.Value) - 1);
                     else
                         SetGameSpeed(0);
+
+                ReapplySpeedIfOverwritten();
             }
+        }
+
+        // Time.timeScale is a single global that any code can write, and the last
+        // writer wins. The game (or another mod) can reset it, e.g. when leaving
+        // construction mode (issue #14), and the mod would otherwise only write it
+        // again on a button press or hotkey. Re-assert the selected speed once per
+        // frame, with two exceptions:
+        //  - Time.timeScale == 0 means something paused the game. Unity stops calling
+        //    FixedUpdate at 0, so overriding it would unpause behind the player's back.
+        //  - At 1x the mod stays out of the way entirely.
+        private static void ReapplySpeedIfOverwritten()
+        {
+            const float pausedTimeScale = 0f;
+            const float normalSpeed = 1f;
+
+            if (Mathf.Approximately(curSpeed, normalSpeed))
+                return;
+            if (Time.timeScale <= pausedTimeScale)
+                return;
+            if (Mathf.Approximately(Time.timeScale, curSpeed))
+                return;
+
+            Time.timeScale = curSpeed;
         }
 
         public static void SetColors(RectTransform btn, bool active)
