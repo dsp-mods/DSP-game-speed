@@ -19,6 +19,7 @@ namespace DSP_Game_Speed
 
         public static ConfigEntry<int> customGameSpeed;
         public static ConfigEntry<int> customComboKey;
+        public static ConfigEntry<bool> raiseCatchUpBudget;
         
 
         public void Awake()
@@ -34,6 +35,7 @@ namespace DSP_Game_Speed
             // setup config file
             customGameSpeed = Config.Bind("DSP Game Speed Options", "customSpeed", 4, "Set a custom speed that can be toggled by pressing Left Alt/Ctrl + 0. At higher speeds, it's difficult to control player movement. Don't exceed 100. 4 is minimum.");
             customComboKey = Config.Bind("DSP Game Speed Options", "comboKey", 0, "Choose a combo key. 0 for Left Alt and 1 for Left Ctrl");
+            raiseCatchUpBudget = Config.Bind("DSP Game Speed Options", "raiseCatchUpBudget", true, "Raise Unity's per-frame catch-up limit (Time.maximumDeltaTime) so speeds above ~10x are actually delivered. Set to false if high speeds cause stutter.");
 
             
             if (customGameSpeed.Value > 5000)
