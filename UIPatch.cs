@@ -112,7 +112,24 @@ namespace DSP_Game_Speed
                         SetGameSpeed((int)(GameSpeed.customGameSpeed.Value) - 1);
                     else
                         SetGameSpeed(0);
+
+                ReapplySpeedIfOverwritten();
             }
+        }
+
+        // Since DSP 0.6.17.5827 the game writes Time.timeScale itself every frame (its
+        // own pause handling resets the scale to 1x), and the last writer wins. The
+        // one-shot Time.timeScale = curSpeed in SetGameSpeed therefore only lasts until
+        // the next frame: the speed briefly kicks in and then drops back to 1x (issue #9).
+        // This postfix on GameMain.Update runs after the game's own update code, so
+        // re-asserting the selected speed here keeps it applied for as long as it is
+        // selected, without depending on the game's internal (renamed) methods.
+        // SpeedReapplyPolicy skips two cases: pause (timeScale 0) and 1x, where the mod
+        // stays out of the way.
+        private static void ReapplySpeedIfOverwritten()
+        {
+            if (SpeedReapplyPolicy.ShouldEnforce(curSpeed, Time.timeScale))
+                Time.timeScale = curSpeed;
         }
 
         public static void SetColors(RectTransform btn, bool active)
